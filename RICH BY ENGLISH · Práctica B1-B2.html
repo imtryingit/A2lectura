@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RICH BY ENGLISH · Práctica B1-B2</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.reveal{animation:pop .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+.fade{animation:pop .3s ease}
+</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen">
+<div class="max-w-3xl mx-auto px-4 py-6">
+  <header class="text-center mb-6">
+    <p class="text-xs font-bold tracking-[.25em] text-violet-600 dark:text-violet-400">RICH BY ENGLISH</p>
+    <h1 class="text-3xl font-extrabold mt-1">Practica, no memorices ✨</h1>
+    <p class="text-slate-500 dark:text-slate-400 mt-1 text-sm">Frase–conector–frase · 12 tiempos · B1-B2</p>
+  </header>
+
+  <details class="mb-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 text-sm">
+    <summary class="cursor-pointer font-semibold">📚 Vocabulario objetivo (toca para ver)</summary>
+    <div id="vocab" class="mt-3 space-y-2"></div>
+  </details>
+
+  <nav class="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-slate-200/70 dark:bg-slate-800/70 mb-6" role="tablist">
+    <button id="tab1" class="tab py-2.5 rounded-xl font-semibold text-sm transition">🔄 Traducción y Lógica</button>
+    <button id="tab2" class="tab py-2.5 rounded-xl font-semibold text-sm transition">💬 Producción Libre</button>
+  </nav>
+
+  <section id="s1"></section>
+  <section id="s2" class="hidden"></section>
+</div>
+
+<script>
+const VOCAB = {
+  "Verbos":"achieve, avoid, improve, decide, manage, suggest, expect, realize, develop, remember",
+  "Adjetivos":"confident, anxious, reliable, curious, exhausted, grateful, ambitious, generous, nervous, honest",
+  "Phrasal verbs":"give up, carry on, figure out, look forward to, catch up",
+  "Conectores":"however, although, because, so, while, when, after, before, since, therefore",
+  "Idioms":"break the ice, a piece of cake, once in a blue moon, hit the books, under the weather",
+  "Adverbios":"definitely, eventually, recently, usually, honestly"
+};
+
+const CARDS = [
+["Present Simple","Normalmente soy honesta, aunque a veces me siento nerviosa cuando hablo en público.","I am usually honest, although I sometimes feel nervous when I speak in public.","Hablamos de rasgos y hábitos → Present Simple. Con el verbo be, el adverbio usually va después (am usually). Después de when, sigue el presente (speak), no el futuro."],
+["Present Simple","Ella siempre sugiere romper el hielo con una pregunta, porque así todos se sienten seguros.","She always suggests breaking the ice with a question, because that way everyone feels confident.","Rutina → Present Simple, y la 3ª persona lleva -s (suggests, feels). Después de suggest usamos verbo+ing. Because explica la razón."],
+["Present Continuous","Ahora mismo estoy intentando averiguar cómo mejorar mi pronunciación mientras mis amigos charlan.","Right now I’m trying to figure out how to improve my pronunciation while my friends are chatting.","Regla de oro de los continuos: acción en pleno desarrollo, “estar + haciendo” → am/are + -ing. While une dos acciones simultáneas, por eso ambas van en continuo."],
+["Present Continuous","Estos días estoy estudiando muchísimo porque estoy ansioso por el examen.","These days I’m hitting the books because I’m anxious about the exam.","“Estos días” = algo temporal y en proceso → Present Continuous. Hit the books es un idiom que significa estudiar duro."],
+["Present Perfect","Recientemente he logrado hablar con confianza, así que estoy muy agradecido con mi profesor.","I have recently achieved my goal of speaking confidently, so I’m very grateful to my teacher.","Regla de oro de los perfectos: pasado con conexión al presente (el resultado importa hoy) → have + participio. Recently encaja aquí, y so introduce la consecuencia."],
+["Present Perfect","Todavía no he averiguado qué hacer, pero nunca me he rendido.","I haven’t figured out what to do yet, but I have never given up.","Nunca/todavía no + experiencia hasta hoy → Present Perfect (haven’t figured, have never given up). No hay un momento concreto del pasado. However/but marcan el contraste."],
+["Present Perfect Continuous","Llevo tres meses poniéndome al día con la gramática y por fin me siento seguro.","I have been catching up on grammar for three months, and I finally feel confident.","Perfecto + continuo: have been + -ing. Se enfatiza la duración (for three months) de algo que empezó en el pasado y sigue. Lo que “llevas haciendo” = este tiempo."],
+["Present Perfect Continuous","Ella lleva toda la mañana estudiando y está agotada, aunque definitivamente va a seguir adelante.","She has been studying all morning and she is exhausted, although she will definitely carry on.","Has been studying: el proceso largo explica el estado actual (exhausted). Con although el segundo verbo es una decisión futura (will). Definitely va entre will y el verbo."],
+["Past Simple","Ayer me sentía mal, pero decidí ir al club porque quería practicar.","Yesterday I felt under the weather, but I decided to go to the club because I wanted to practice.","Yesterday = momento terminado → Past Simple. Under the weather = sentirse mal. Todas las acciones son hechos cerrados: felt, decided, wanted."],
+["Past Simple","Cuando conocí a Ana, rompí el hielo y ella me sugirió unirme al club.","When I met Ana, I broke the ice and she suggested that I join the club.","Secuencia de hechos terminados → Past Simple (met, broke, suggested). Tras suggest that se usa el verbo base: that I join."],
+["Past Continuous","Mientras ella desarrollaba su plan, yo me sentía curioso por el resultado.","While she was developing her plan, I was feeling curious about the result.","Continuo = acción en progreso en el pasado. Was/were + -ing; while presenta dos procesos paralelos."],
+["Past Continuous","Estaba estudiando cuando me di cuenta de que ya no estaba nervioso.","I was studying when I realized that I wasn’t nervous anymore.","La acción larga y de fondo va en continuo (was studying); la que la interrumpe, corta, va en Past Simple (realized). Conector clásico: when."],
+["Past Perfect","Después de que habían estudiado durante horas, se dieron cuenta de que el examen era pan comido.","After they had studied for hours, they realized the exam was a piece of cake.","Past Perfect (had + participio) = lo que pasó ANTES de otro momento del pasado. Primero estudiaron (had studied), luego se dieron cuenta (realized)."],
+["Past Perfect","No recordaba su nombre porque nunca lo había conocido antes de la reunión.","I didn’t remember his name because I had never met him before the meeting.","Primero (nunca lo conocí) viene antes que el recuerdo fallido en el pasado → had never met. Because explica el motivo del Past Simple."],
+["Past Perfect Continuous","Estaba agotado porque había estado estudiando toda la noche antes de la entrevista.","I was exhausted because I had been studying all night before the interview.","Había estado + -ing: un proceso largo anterior a otro momento pasado. Se enfatiza la duración (all night) y su efecto (exhausted)."],
+["Past Perfect Continuous","Finalmente se rindió, aunque había estado intentándolo durante años.","She eventually gave up, although she had been trying for years.","Gave up (Past Simple) es el hecho principal; had been trying es el esfuerzo continuo que lo precedió. Although marca el contraste."],
+["Future Simple","Honestamente, creo que aprobaré el examen, aunque sea difícil.","Honestly, I think I will pass the exam, although it is difficult.","Predicción u opinión del momento → will + verbo base. Después de although, el presente (is), no will."],
+["Future Simple","Te prometo que me pondré al día con las lecciones antes de que termine el mes.","I promise I will catch up on the lessons before the month ends.","Promesa → will. Tras before (conector de tiempo) usamos presente simple (ends), aunque el significado sea futuro."],
+["Future Continuous","Mañana a esta hora estaré hablando con mi jefe, así que probablemente estaré nervioso.","Tomorrow at this time I will be talking to my boss, so I will probably be nervous.","Continuo + futuro: will be + -ing = estaré haciendo algo en un momento concreto del futuro. So conecta la causa con la consecuencia."],
+["Future Continuous","El próximo verano estaremos viajando y esperando con ganas conocer gente nueva.","Next summer we will be traveling and looking forward to meeting new people.","Will be traveling = acción en progreso en el futuro. Look forward to siempre va con -ing, porque “to” aquí es una preposición."],
+["Future Perfect","Para diciembre habré logrado mi meta y habré mejorado mucho mi inglés.","By December I will have achieved my goal and will have improved my English a lot.","Perfecto en futuro: will have + participio = algo estará terminado antes de un momento futuro (by December)."],
+["Future Perfect","Cuando llegues, ya habré averiguado cómo resolverlo.","By the time you arrive, I will have figured it out.","Mi acción estará completa antes de la tuya. Tras by the time usamos presente simple (arrive); la principal lleva will have + participio."],
+["Future Perfect Continuous","El próximo año habré estado estudiando inglés durante cinco años y seguiré siendo curioso.","Next year I will have been studying English for five years, and I will still be curious.","El tiempo más largo: will have been + -ing. Mide cuánto tiempo llevarás haciendo algo (for five years) cuando llegue ese futuro."],
+["Future Perfect Continuous","En junio habrá estado ahorrando durante dos años, por lo tanto podrá viajar.","In June she will have been saving money for two years; therefore, she will be able to travel.","Will have been saving enfatiza el proceso acumulado. Therefore introduce una conclusión lógica; lleva punto y coma o punto antes y coma después."]
+];
+
+const QUESTIONS = [
+"Tell me about a time you felt exhausted but managed to carry on and achieve a goal. What had you been doing before that moment?",
+"Describe a moment when you felt really nervous. What did you do to break the ice, and how did you feel afterwards?",
+"What have you recently done to improve your English, and what are you expecting to achieve by the end of the year?",
+"Who is the most reliable person in your life? Explain why, and tell me about a time when they helped you.",
+"Have you ever wanted to give up on something? What happened, and what made you decide to keep going?",
+"Tell me about a task that seemed difficult but turned out to be a piece of cake. What had you expected?",
+"Describe a day when you were feeling under the weather. What were you doing when you realized you needed to rest?",
+"What is something you do once in a blue moon? Honestly, how do you feel about it?",
+"Talk about a person who is very generous. What have they done for you or for others?",
+"What are you looking forward to in the next few months? What will you have achieved by then?",
+"Tell me about a time you had to hit the books for something important. How long had you been studying, and how did it go?",
+"What are you curious about at the moment? What have you been doing to find out more?",
+"Describe a situation when you had to catch up on something. What did you do, and would you avoid that situation next time?",
+"What do you think makes someone ambitious? Are you ambitious yourself? Give an example of what you are developing right now.",
+"Imagine it is five years from now. What will you be doing, and what will have changed in your life since today?",
+"Tell me about a moment when you felt really grateful. What was happening while you were feeling that way?",
+"What advice would you suggest to someone who feels anxious before speaking English? Use an experience of your own."
+];
+
+const $ = id => document.getElementById(id);
+function el(tag, cls, html){const e=document.createElement(tag); if(cls) e.className=cls; if(html!==undefined) e.innerHTML=html; return e;}
+
+// Vocab
+const vb=$("vocab");
+Object.entries(VOCAB).forEach(([k,v])=>{
+  const row=el("div","", `<p class="text-xs font-bold uppercase text-violet-600 dark:text-violet-400 mb-1">${k}</p>`);
+  const w=el("div","flex flex-wrap gap-1");
+  v.split(", ").forEach(x=>w.appendChild(el("span","px-2 py-0.5 rounded-full bg-violet-100 dark:bg-violet-900/40 text-violet-800 dark:text-violet-200 text-xs",x)));
+  row.appendChild(w); vb.appendChild(row);
+});
+
+// Tabs
+function showTab(n){
+  $("s1").classList.toggle("hidden",n!==1); $("s2").classList.toggle("hidden",n!==2);
+  [1,2].forEach(i=>{
+    $("tab"+i).className="tab py-2.5 rounded-xl font-semibold text-sm transition "+(i===n
+      ?"bg-white dark:bg-slate-950 shadow text-violet-700 dark:text-violet-300"
+      :"text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200");
+  });
+}
+$("tab1").onclick=()=>showTab(1); $("tab2").onclick=()=>showTab(2); showTab(1);
+
+// Section 1: flashcards
+let idx=0, revealed=false;
+const seen=new Set();
+function renderCard(){
+  const c=CARDS[idx]; const s=$("s1"); s.innerHTML="";
+  seen.add(idx);
+  s.appendChild(el("div","flex items-center justify-between text-sm text-slate-500 dark:text-slate-400 mb-2",
+    `<span>Tarjeta <b>${idx+1}</b> / ${CARDS.length}</span><span>${seen.size} vistas</span>`));
+  s.appendChild(el("div","h-2 rounded-full bg-slate-200 dark:bg-slate-800 mb-4 overflow-hidden",
+    `<div class="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 transition-all duration-500" style="width:${(idx+1)/CARDS.length*100}%"></div>`));
+
+  const card=el("div","fade rounded-3xl p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg");
+  card.appendChild(el("span","inline-block px-3 py-1 rounded-full text-xs font-bold bg-fuchsia-100 dark:bg-fuchsia-900/40 text-fuchsia-700 dark:text-fuchsia-300",c[0]));
+  card.appendChild(el("p","text-xl sm:text-2xl font-bold mt-4 leading-snug",c[1]));
+  card.appendChild(el("p","text-sm text-slate-500 dark:text-slate-400 mt-2","💭 Piénsalo y dilo en voz alta antes de revelar."));
+
+  const ans=el("div","reveal mt-5 space-y-3 hidden");
+  ans.appendChild(el("div","rounded-2xl p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900",
+    `<p class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1">✅ EN INGLÉS</p><p class="text-lg font-semibold text-emerald-900 dark:text-emerald-100"></p>`));
+  ans.firstChild.querySelector("p.text-lg").textContent=c[2];
+  ans.appendChild(el("div","rounded-2xl p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900",
+    `<p class="text-xs font-bold text-amber-700 dark:text-amber-400 mb-1">🧠 ¿POR QUÉ?</p><p class="text-sm text-amber-900 dark:text-amber-100 leading-relaxed"></p>`));
+  ans.lastChild.querySelector("p.text-sm").textContent=c[3];
+  card.appendChild(ans);
+
+  const btn=el("button","mt-5 w-full py-3 rounded-2xl font-bold text-white bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:scale-[1.02] active:scale-95 transition shadow-md","Revelar / Verificar");
+  btn.onclick=()=>{
+    revealed=!revealed; ans.classList.toggle("hidden",!revealed);
+    if(revealed){ans.classList.remove("reveal");void ans.offsetWidth;ans.classList.add("reveal");}
+    btn.textContent=revealed?"Ocultar respuesta":"Revelar / Verificar";
+  };
+  card.appendChild(btn);
+  s.appendChild(card);
+
+  const nav=el("div","flex gap-3 mt-4");
+  const prev=el("button","flex-1 py-2.5 rounded-xl font-semibold bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition","← Anterior");
+  const next=el("button","flex-1 py-2.5 rounded-xl font-semibold bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition","Siguiente →");
+  const shuf=el("button","px-4 py-2.5 rounded-xl font-semibold bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 active:scale-95 transition","🔀");
+  prev.onclick=()=>{idx=(idx-1+CARDS.length)%CARDS.length;revealed=false;renderCard();};
+  next.onclick=()=>{idx=(idx+1)%CARDS.length;revealed=false;renderCard();};
+  shuf.onclick=()=>{idx=Math.floor(Math.random()*CARDS.length);revealed=false;renderCard();};
+  shuf.title="Tarjeta al azar";
+  nav.append(prev,shuf,next); s.appendChild(nav);
+}
+renderCard();
+
+// Section 2: open questions
+let notes={};
+try{notes=JSON.parse(localStorage.getItem("rbe_notes")||"{}")||{};}catch(e){notes={};}
+function persist(){try{localStorage.setItem("rbe_notes",JSON.stringify(notes));}catch(e){}}
+
+const s2=$("s2");
+s2.appendChild(el("p","text-sm text-slate-500 dark:text-slate-400 mb-4","Responde con tus propias palabras: cuenta historias, da opiniones y usa el vocabulario y los tiempos que aprendiste. Tu respuesta se guarda en este navegador."));
+QUESTIONS.forEach((q,i)=>{
+  const box=el("div","rounded-3xl p-5 mb-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm");
+  const head=el("div","flex gap-3");
+  head.appendChild(el("span","shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white text-sm font-bold flex items-center justify-center",i+1));
+  const qp=el("p","font-semibold leading-snug"); qp.textContent=q; head.appendChild(qp);
+  box.appendChild(head);
+  const ta=el("textarea","mt-3 w-full min-h-[110px] rounded-2xl p-3 text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500");
+  ta.placeholder="Write your answer here…";
+  box.appendChild(ta);
+  const row=el("div","flex items-center gap-3 mt-2");
+  const save=el("button","px-4 py-2 rounded-xl text-sm font-bold text-white bg-violet-600 hover:bg-violet-700 active:scale-95 transition","Guardar nota");
+  const msg=el("span","text-xs text-emerald-600 dark:text-emerald-400");
+  row.append(save,msg); box.appendChild(row);
+  const saved=el("div","");
+  box.appendChild(saved);
+
+  function showSaved(){
+    saved.innerHTML="";
+    const n=notes[i]; if(!n) return;
+    const card=el("div","reveal mt-3 rounded-2xl p-3 bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-900");
+    card.appendChild(el("p","text-xs font-bold text-violet-700 dark:text-violet-300 mb-1",`📝 Nota guardada · ${n.date}`));
+    const t=el("p","text-sm whitespace-pre-wrap"); t.textContent=n.text; card.appendChild(t);
+    const del=el("button","mt-2 text-xs text-rose-600 dark:text-rose-400 underline","Borrar nota");
+    del.onclick=()=>{delete notes[i];persist();showSaved();};
+    card.appendChild(del); saved.appendChild(card);
+  }
+  save.onclick=()=>{
+    const v=ta.value.trim(); if(!v){msg.textContent="Escribe algo primero ✍️";msg.className="text-xs text-amber-600 dark:text-amber-400";return;}
+    notes[i]={text:v,date:new Date().toLocaleString("es-CO",{dateStyle:"short",timeStyle:"short"})};
+    persist(); showSaved(); ta.value="";
+    msg.className="text-xs text-emerald-600 dark:text-emerald-400"; msg.textContent="¡Guardado! ✅";
+    setTimeout(()=>msg.textContent="",2000);
+  };
+  showSaved(); s2.appendChild(box);
+});
+</script>
+</body>
+</html>
